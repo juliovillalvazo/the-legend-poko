@@ -4,18 +4,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./src/styles.css">
+    <link rel="stylesheet" href="./css/styles.css">
     <title>The Legend of Poko</title>
 </head>
 <body>
-    <div class="game-container">
-        <canvas id="canvas" width="500" height="300"></canvas>
+    <div class="game-container hide">
+        <canvas id="canvas" width="700" height="400"></canvas>
 
     </div>
-    <div class="menu hide" id="menu">
-        <button class="btn" id="hide">Start!</button>
+    <div class="menu" id="menu">
+        <button class="btn start">Start!</button>
         <button class="btn instructions">Instructions</button>
         <button class="btn credits">Credits</button>
+    </div>
+
+    <div class="menu menu-game hide" id="menu">
+        <button class="btn continue">continue</button>
+        <button class="btn quit">quit</button>
     </div>
 
     <div id="instructions" class="hide">
@@ -25,5 +30,7 @@
     <div id="credits" class="hide">
         <p>story and design by Julio Villalvazo Carrera</p>
     </div>
+
+    <script src="./src/index.js"></script>
 </body>
 </html>
