@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    background-image: url('../images/background_forest.webp');
+    background-image: url('/../images/background_forest.webp');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
