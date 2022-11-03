@@ -36,10 +36,10 @@ const m1 = new Image();
 const m2 = new Image();
 const m3 = new Image();
 
-m0.src = './images/main0.gif';
-m1.src = './images/main1.gif';
-m2.src = './images/main2.gif';
-m3.src = './images/main3.gif';
+m0.src = './src/images/main0.gif';
+m1.src = './src/images/main1.gif';
+m2.src = './src/images/main2.gif';
+m3.src = './src/images/main3.gif';
 
 const mSprites = [m0, m1, m2, m3];
 
@@ -49,10 +49,10 @@ const e1 = new Image();
 const e2 = new Image();
 const e3 = new Image();
 
-e0.src = './images/goblin1.gif';
-e1.src = './images/goblin2.gif';
-e2.src = './images/goblin3.gif';
-e3.src = './images/goblin4.gif';
+e0.src = './src/images/goblin1.gif';
+e1.src = './src/images/goblin2.gif';
+e2.src = './src/images/goblin3.gif';
+e3.src = './src/images/goblin4.gif';
 
 const eSprites = [e0, e1, e2, e3];
 
@@ -73,17 +73,17 @@ const h20 = new Image();
 const h10 = new Image();
 const h0 = new Image();
 
-h100.src = './images/health100.gif';
-h90.src = './images/health90.gif';
-h80.src = './images/health80.gif';
-h70.src = './images/health70.gif';
-h60.src = './images/health60.gif';
-h50.src = './images/health50.gif';
-h40.src = './images/health40.gif';
-h30.src = './images/health30.gif';
-h20.src = './images/health20.gif';
-h10.src = './images/health10.gif';
-h0.src = './images/health0.gif';
+h100.src = './src/images/health100.gif';
+h90.src = './src/images/health90.gif';
+h80.src = './src/images/health80.gif';
+h70.src = './src/images/health70.gif';
+h60.src = './src/images/health60.gif';
+h50.src = './src/images/health50.gif';
+h40.src = './src/images/health40.gif';
+h30.src = './src/images/health30.gif';
+h20.src = './src/images/health20.gif';
+h10.src = './src/images/health10.gif';
+h0.src = './src/images/health0.gif';
 
 // mana sprites
 const m100 = new Image();
@@ -95,22 +95,22 @@ const m20 = new Image();
 const m10 = new Image();
 const mNone = new Image();
 
-m100.src = './images/mana100.gif';
-m90.src = './images/mana90.gif';
-m80.src = './images/mana80.gif';
-m70.src = './images/mana70.gif';
-m60.src = './images/mana60.gif';
-m20.src = './images/mana20.gif';
-m10.src = './images/mana10.gif';
-mNone.src = './images/mana0.gif';
+m100.src = './src/images/mana100.gif';
+m90.src = './src/images/mana90.gif';
+m80.src = './src/images/mana80.gif';
+m70.src = './src/images/mana70.gif';
+m60.src = './src/images/mana60.gif';
+m20.src = './src/images/mana20.gif';
+m10.src = './src/images/mana10.gif';
+mNone.src = './src/images/mana0.gif';
 
 // mana potion sprite
 const mPotion = new Image();
-mPotion.src = './images/manapotion.png';
+mPotion.src = './src/images/manapotion.png';
 
 // health potion sprite
 const hPotion = new Image();
-hPotion.src = './images/healthpotion.png';
+hPotion.src = './src/images/healthpotion.png';
 
 // character class
 class Character {
