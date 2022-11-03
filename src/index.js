@@ -104,6 +104,14 @@ m20.src = '../images/mana20.gif';
 m10.src = '../images/mana10.gif';
 mNone.src = '../images/mana0.gif';
 
+// mana potion sprite
+const mPotion = new Image();
+mPotion.src = '../images/manapotion.png';
+
+// health potion sprite
+const hPotion = new Image();
+hPotion.src = '../images/healthpotion.png';
+
 // character class
 class Character {
     constructor(ctx, img, posX, posY) {
@@ -266,6 +274,21 @@ class Beam {
         this.ctx.drawImage(this.img, this.posX, this.posY, 25, 25);
     }
 }
+
+// class Potion {
+//     constructor(char, type) {
+//         this.char = char;
+//         this.type = type;
+//     }
+
+//     effect() {
+
+//     }
+
+//     render() {
+
+//     }
+// }
 
 // start game
 const startGame = () => {
