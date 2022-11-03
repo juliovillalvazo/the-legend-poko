@@ -36,10 +36,10 @@ const m1 = new Image();
 const m2 = new Image();
 const m3 = new Image();
 
-m0.src = '../images/main0.gif';
-m1.src = '../images/main1.gif';
-m2.src = '../images/main2.gif';
-m3.src = '../images/main3.gif';
+m0.src = './images/main0.gif';
+m1.src = './images/main1.gif';
+m2.src = './images/main2.gif';
+m3.src = './images/main3.gif';
 
 const mSprites = [m0, m1, m2, m3];
 
