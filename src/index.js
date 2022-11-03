@@ -58,7 +58,7 @@ const eSprites = [e0, e1, e2, e3];
 
 // attack sprite
 const beamImg = new Image();
-beamImg.src = '../images/shoot.png';
+beamImg.src = './src/images/shoot.png';
 
 // health sprites
 const h100 = new Image();
@@ -303,7 +303,7 @@ const startGame = () => {
     state.initId = setTimeout(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.style.backgroundImage =
-            "url('../images/forest_background_animated.gif')";
+            "url('./src/images/forest_background_animated.gif')";
         canvas.style.backgroundPosition = 'center';
         canvas.style.backgroundSize = 'cover';
         canvas.style.backgroundRepeat = 'no-repeat';
