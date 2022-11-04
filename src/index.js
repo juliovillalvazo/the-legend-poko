@@ -22,6 +22,8 @@ const state = {
     message1: 'Rescue the princess and save',
     message2: 'the kingdom from the evil army of Browl!',
     score: 0,
+    enemyRate: 3000,
+    finalLevel: false,
 };
 
 // character state
@@ -112,6 +114,9 @@ mPotion.src = './src/images/manapotion.png';
 const hPotion = new Image();
 hPotion.src = './src/images/healthpotion.png';
 
+// potion types
+const types = ['health', 'mana'];
+
 // character class
 class Character {
     constructor(ctx, img, posX, posY) {
@@ -127,11 +132,15 @@ class Character {
     }
 
     right() {
-        this.posX += 10;
+        if (this.posX + 10 < 630) {
+            this.posX += 10;
+        }
     }
 
     left() {
-        this.posX -= 10;
+        if (this.posX - 10 > 0) {
+            this.posX -= 10;
+        }
     }
 
     jump() {
@@ -148,12 +157,49 @@ class Character {
         this.ctx.drawImage(this.img, this.posX, this.posY, 74, 74);
     }
 
-    attack() {
-        const beam = new Beam(ctx, beamImg, this.posX + 40, this.posY + 40);
-        this.mana -= 10;
-        state.beams.push(beam);
+    gainHealth() {
+        this.health += 15;
 
+        switch (this.health) {
+            case 100:
+                this.healthImg = h100;
+                break;
+            case 90:
+                this.healthImg = h90;
+                break;
+            case 80:
+                this.healthImg = h80;
+                break;
+            case 70:
+                this.healthImg = h70;
+                break;
+            case 60:
+                this.healthImg = h60;
+                break;
+            case 50:
+                this.healthImg = h50;
+                break;
+            case 40:
+                this.healthImg = h40;
+                break;
+            case 30:
+                this.healthImg = h30;
+                break;
+            case 20:
+                this.healthImg = h20;
+                break;
+            case 10:
+                this.healthImg = h10;
+                break;
+        }
+    }
+
+    gainMana() {
+        this.mana += 15;
         switch (this.mana) {
+            case 100:
+                this.manaImg = m100;
+                break;
             case 90:
                 this.manaImg = m90;
                 break;
@@ -177,6 +223,40 @@ class Character {
             case 0:
                 this.manaImg = mNone;
                 break;
+        }
+    }
+
+    attack() {
+        if (this.mana - 10 >= 0) {
+            const beam = new Beam(ctx, beamImg, this.posX + 40, this.posY + 40);
+            this.mana -= 10;
+            state.beams.push(beam);
+
+            switch (this.mana) {
+                case 90:
+                    this.manaImg = m90;
+                    break;
+                case 80:
+                    this.manaImg = m80;
+                    break;
+                case 70:
+                    this.manaImg = m70;
+                    break;
+                case 60:
+                    this.manaImg = m60;
+                    break;
+                case 20:
+                    this.manaImg = m20;
+                    break;
+
+                case 10:
+                    this.manaImg = m10;
+                    break;
+
+                case 0:
+                    this.manaImg = mNone;
+                    break;
+            }
         }
     }
 
@@ -231,12 +311,13 @@ const mainChar = new Character(ctx, m0, 10, 390 - 74);
 // Enemies Class
 
 class Enemy extends Character {
-    constructor(ctx, img, posX, posY) {
+    constructor(ctx, img, posX, posY, bigger = false) {
         super(ctx, img, posX, posY);
         this.ctx = ctx;
         this.img = img;
         this.posX = posX;
         this.posY = posY;
+        this.bigger = bigger;
     }
 
     left() {
@@ -254,6 +335,18 @@ class Enemy extends Character {
                 }
             }, 600);
         }
+    }
+
+    render() {
+        if (this.bigger) {
+            this.ctx.drawImage(this.img, this.posX, 220, 200, 200);
+        } else {
+            this.ctx.drawImage(this.img, this.posX, this.posY, 74, 74);
+        }
+    }
+
+    looseHealth() {
+        this.health -= 10;
     }
 }
 
@@ -275,20 +368,24 @@ class Beam {
     }
 }
 
-// class Potion {
-//     constructor(char, type) {
-//         this.char = char;
-//         this.type = type;
-//     }
+class Potion {
+    constructor(ctx, img, char, type, posX) {
+        this.ctx = ctx;
+        this.img = img;
+        this.char = char;
+        this.type = type;
+        this.posX = posX;
+        this.posY = 0;
+    }
 
-//     effect() {
+    drop() {
+        if (this.posY < 360) this.posY += 2;
+    }
 
-//     }
-
-//     render() {
-
-//     }
-// }
+    render() {
+        this.ctx.drawImage(this.img, this.posX, this.posY, 30, 30);
+    }
+}
 
 // start game
 const startGame = () => {
@@ -297,8 +394,17 @@ const startGame = () => {
     state.start = true;
     state.enemies = [];
     state.beams = [];
+    state.potions = [];
     state.time = 60_000;
     mainChar.kills = 0;
+
+    if (state.finalLevel) {
+        state.potionsRate = state.potionsRate / 2;
+        state.finalBoss = new Enemy(ctx, e0, 450, 0, true);
+        state.finalBoss.health = 30;
+    } else {
+        state.potionsRate = 300;
+    }
 
     state.initId = setTimeout(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -313,6 +419,10 @@ const startGame = () => {
             mainChar.render();
             mainChar.renderHealth();
             mainChar.renderMana();
+
+            if (state.finalLevel) {
+                state.finalBoss.render();
+            }
 
             ctx.font = '20px serif';
 
@@ -332,22 +442,22 @@ const startGame = () => {
             ctx.fillText(`Score: ${state.score}`, 570, 54);
 
             state.enemies.forEach((enemy, i) => {
+                enemy.render();
                 enemy.left();
 
                 if (Math.floor(Math.random() * 50) === 10) {
                     enemy.jump();
                 }
 
-                enemy.render();
                 enemy.img = eSprites[state.enemiesCounter];
 
                 // collision
 
                 if (
-                    enemy.posX <= mainChar.posX + 60 &&
-                    !(mainChar.posX >= enemy.posX + 60) &&
-                    enemy.posY <= mainChar.posY + 60 &&
-                    enemy.posY + 60 >= mainChar.posY &&
+                    enemy.posX <= mainChar.posX + 70 &&
+                    !(mainChar.posX >= enemy.posX + 70) &&
+                    enemy.posY <= mainChar.posY + 70 &&
+                    enemy.posY + 70 >= mainChar.posY &&
                     !state.pause
                 ) {
                     mainChar.looseHealth();
@@ -365,7 +475,6 @@ const startGame = () => {
 
             // time ran out
             if (state.time <= 0) {
-                console.log('loose');
                 gameOver();
             }
 
@@ -379,9 +488,10 @@ const startGame = () => {
 
                 state.enemies.forEach((enemy, ie) => {
                     if (
-                        b.posX + 23 >= enemy.posX &&
-                        b.posY <= enemy.posY + 27 &&
-                        b.posY + 27 >= enemy.posY
+                        b.posX + 20 >= enemy.posX &&
+                        !(b.posX + 20 >= enemy.posX + 74) &&
+                        b.posY >= enemy.posY + 5 &&
+                        !(b.posY >= enemy.posY + 74)
                     ) {
                         state.beams.splice(ib, 1);
                         state.enemies.splice(ie, 1);
@@ -389,11 +499,47 @@ const startGame = () => {
                         mainChar.kills++;
                     }
                 });
+
+                if (
+                    state.finalLevel &&
+                    b.posX + 20 >= state.finalBoss.posX &&
+                    !(b.posX + 20 >= state.finalBoss.posX + 200) &&
+                    b.posY >= state.finalBoss.posY + 5
+                ) {
+                    state.beams.splice(ib, 1);
+                    state.finalBoss.looseHealth();
+
+                    if (state.finalBoss.health <= 0) {
+                        winGame();
+                    }
+                }
             });
 
-            if (mainChar.kills === 6) {
+            if (mainChar.kills >= 3 && !state.finalLevel) {
                 advanceLevel();
             }
+
+            state.potions.forEach((potion, i) => {
+                potion.render();
+                potion.drop();
+
+                // check collision
+                if (
+                    mainChar.posX + 50 >= potion.posX &&
+                    potion.posY + 30 >= mainChar.posY &&
+                    mainChar.posX <= potion.posX + 30 &&
+                    mainChar.posY + 50 >= potion.posY
+                ) {
+                    state.potions.splice(i, 1);
+                    if (mainChar[potion.type] + 5 <= 100) {
+                        if (potion.type === 'health') {
+                            mainChar.gainHealth();
+                        } else {
+                            mainChar.gainMana();
+                        }
+                    }
+                }
+            });
         }, 1000 / 60);
 
         state.renderIntervalId = setInterval(() => {
@@ -407,7 +553,25 @@ const startGame = () => {
 
                 state.enemies.push(newEnemy);
             }
-        }, 1000);
+        }, state.enemyRate);
+
+        state.potionsIntervalId = setInterval(() => {
+            // make randomly potions
+            if (Math.floor(Math.random() * 10) === 1) {
+                const potionType = types[Math.round(Math.random())];
+                const randPosX = Math.floor(Math.random() * 370) + 30;
+                const potionImg = potionType === 'health' ? hPotion : mPotion;
+                const newPotion = new Potion(
+                    ctx,
+                    potionImg,
+                    mainChar,
+                    potionType,
+                    randPosX
+                );
+
+                state.potions.push(newPotion);
+            }
+        }, state.potionsRate);
 
         state.timeIntervalId = setInterval(() => {
             state.time -= 1;
@@ -425,9 +589,17 @@ const startGame = () => {
 
 const advanceLevel = () => {
     state.level++;
-    state.message1 = `Level ${state.level}`;
-    state.message2 = '';
+    if (state.level > 3) {
+        state.message1 = `Warning!!`;
+        state.message2 = 'Final Boss is here!!';
+        state.finalLevel = true;
+    } else {
+        state.message1 = `Level ${state.level}`;
+        state.message2 = '';
+    }
+
     state.score += state.time;
+    state.enemyRate = state.enemyRate / 2;
 
     // clear interval of main character
     clearInterval(characterState.intervalId);
@@ -443,6 +615,12 @@ const advanceLevel = () => {
 
     // clear time interval
     clearInterval(state.timeIntervalId);
+
+    // clear potions interval
+    clearInterval(state.potionsIntervalId);
+
+    // clear potions array
+    state.potions = [];
 
     // clear enemies array
     state.enemies = [];
@@ -523,6 +701,12 @@ const keyPressed = (e) => {
                         // clear time interval
                         clearInterval(state.timeIntervalId);
 
+                        // clear potions interval
+                        clearInterval(state.potionsIntervalId);
+
+                        // clear potions array
+                        state.potions = [];
+
                         // reset message
                         state.message1 = 'Rescue the princess and save';
                         state.message2 =
@@ -530,6 +714,9 @@ const keyPressed = (e) => {
 
                         // clear enemies array
                         state.enemies = [];
+
+                        // clear final level
+                        state.finalLevel = false;
 
                         // clear beams array
                         state.beams = [];
@@ -604,6 +791,10 @@ window.addEventListener('keydown', keyPressed);
 const updateSprites = () => {
     mainChar.img = mSprites[characterState.counter];
 
+    if (state.finalLevel) {
+        state.finalBoss.img = eSprites[state.enemiesCounter];
+    }
+
     if (state.enemiesCounter === eSprites.length - 1) {
         state.enemiesCounter = 0;
     } else {
@@ -624,12 +815,16 @@ const gameOver = () => {
     clearInterval(state.enemiesRenderIntervalId);
     clearInterval(state.initId);
     clearInterval(state.timeIntervalId);
+    clearInterval(state.potionsIntervalId);
 
     // clear enemies array
     state.enemies = [];
 
     // clear beams array
     state.beams = [];
+
+    // clear potions array
+    state.potions = [];
 
     // clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -645,6 +840,48 @@ const gameOver = () => {
 
     ctx.font = '40px Serif';
     ctx.fillText('Game Over', 250, 190);
+
+    // score is calculated from time and kill points
+    ctx.fillText(`Your score is ${state.score + state.time}`, 180, 240);
+
+    // reload page
+    setTimeout(() => {
+        location.reload();
+    }, 3000);
+};
+
+// Win (defeat final boss)
+const winGame = () => {
+    clearInterval(characterState.intervalId);
+    clearInterval(state.renderIntervalId);
+    clearInterval(state.enemiesRenderIntervalId);
+    clearInterval(state.initId);
+    clearInterval(state.timeIntervalId);
+    clearInterval(state.potionsIntervalId);
+
+    // clear enemies array
+    state.enemies = [];
+
+    // clear beams array
+    state.beams = [];
+
+    // clear potions array
+    state.potions = [];
+
+    // clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // reset initial values
+    mainChar.posX = 10;
+    mainChar.posY = 390 - 74;
+    mainChar.img = m0;
+    characterState.counter = 0;
+
+    canvas.style.backgroundImage = null;
+    canvas.style.backgroundColor = 'black';
+
+    ctx.font = '40px Serif';
+    ctx.fillText('You saved the kingdom!!', 220, 190);
 
     // score is calculated from time and kill points
     ctx.fillText(`Your score is ${state.score + state.time}`, 180, 240);
